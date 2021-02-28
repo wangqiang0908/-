@@ -64,7 +64,7 @@ $("#register form").on("submit", function(e) {
   
     // 2.提交数据
     $.ajax({
-      url: "http://ajax.frontend.itheima.net/api/reguser",
+      url: "/api/reguser",
       type: "POST",
       data: data,
       success: function(res) {
@@ -98,7 +98,7 @@ $("#login form").on("submit", function(e) {
   
     // 2.提交数据
     $.ajax({
-      url: "http://ajax.frontend.itheima.net/api/login",
+      url: "/api/login",
       type: "POST",
       data: data,
       success: function(res) {

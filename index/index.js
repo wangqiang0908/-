@@ -25,7 +25,7 @@ if (localStorage.getItem("token") == null) {
 // 知识：去哪看返回数据？$.ajax complete完成！不是成功！
 //       返回有过期标识数据，也是个成功数据！不再success里面判断！
 //       success：做返回正常数据业务！
-//       complete：处理返回有明显标注数据业务！
+//       complete：处理返回有明显标注token过期的数据业务！
 
 // 代码：index页面内所有请求，都需要通过complete处理过期时间！
 
@@ -38,74 +38,62 @@ if (localStorage.getItem("token") == null) {
 
 
 
+
+
+
+
+
 // **************************************************获取个人信息
-$.ajax({
-  url: "http://ajax.frontend.itheima.net/my/userinfo",
-  // type:"get",
-  // 没有传参
-  // 设置请求头：
-  headers: {
-    Authorization: localStorage.getItem("token")
-  },
-  success: function(res) {
+function getInfo() {
+  $.ajax({
+    url: "/my/userinfo",
+    // type:"get",
+    success: function(res) {
 
-    if (res.status == 0) {
-      // 产品经理设计思路：
-      //      1.名字：优先显示昵称，后则显示用户名！
-      let name = res.data.nickname || res.data.username;
-      $(".username").text(name);
+      if (res.status == 0) {
+        // 产品经理设计思路：
+        //      1.名字：优先显示昵称，后则显示用户名！
+        let name = res.data.nickname || res.data.username;
+        $(".username").text(name);
 
 
 
-      //      2.圆形：优先显示头像，后则显示名字的第一个字！
-      if (res.data.user_pic != null) {
-        // 图片base64图片流：
-        //     好处：直接在HTML页面中，在页面中渲染，减少对服务器请求！
-        //     弊端：处理图片流字符串，把图片大小增加为原来30%；前端HTML加载费劲！
-        //     场景：处理小图；雪碧图；
-        $(".userinfo img").show().css("display", "inline-block").attr("src", res.data.user_pic);
+        //      2.圆形：优先显示头像，后则显示名字的第一个字！
+        if (res.data.user_pic != null) {
+          // 图片base64图片流：
+          //     好处：直接在HTML页面中，在页面中渲染，减少对服务器请求！
+          //     弊端：处理图片流字符串，把图片大小增加为原来30%；前端HTML加载费劲！
+          //     场景：处理小图；雪碧图；
+          $(".userinfo img").show().css("display", "inline-block").attr("src", res.data.user_pic);
 
+        }
+        //      名字第一个字！
+        else {
+          // 1.截取
+          let str = name.substr(0, 1);
+
+          // 2.大写：防止第一个字是英文！
+          str = str.toUpperCase();
+
+          // 3.设置
+          $(".avatar").show().css("display", "inline-block").text(str);
+          //      show方法：给DOM添加行内样式 display: inline;
+          //      需要：单独设置css样式
+        }
       }
-      //      名字第一个字！
-      else {
-        // 1.截取
-        let str = name.substr(0, 1);
-
-        // 2.大写：防止第一个字是英文！
-        str = str.toUpperCase();
-
-        // 3.设置
-        $(".avatar").show().css("display", "inline-block").text(str);
-        //      show方法：给DOM添加行内样式 display: inline;
-        //      需要：单独设置css样式
-      }
-    }
 
 
+    },
+    // token携带：去公共common.js
+    // token过去验证：去公共common.js
+    // 为什么要去公共common.js？
+    //     因为除了登录和注册外，需要需要请求做这两事件
+    //     这是重复性代码
+    //     单独配置到JS文件内进行维护!
 
-
-
-
-
-
-
-  },
-  // index页面内所有请求，都需要通过complete处理过期业务！
-  complete: function(xhr) {
-    // xhr 当前请求xhr实例化  原生
-    let obj = JSON.parse(xhr.responseText);
-
-    // 特别标注："status":1,"message":"身份认证失败！"
-    if (obj.status == 1 && obj.message == "身份认证失败！") {
-      //
-      // 1.回到login.html
-      location.href = "../login.html";
-
-      // 2.同时清除过期token
-      localStorage.removeItem("token");
-    }
-  }
-});
+  });
+}
+getInfo();
 
 
 
