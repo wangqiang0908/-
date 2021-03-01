@@ -65,7 +65,7 @@ function getInfo() {
           //     弊端：处理图片流字符串，把图片大小增加为原来30%；前端HTML加载费劲！
           //     场景：处理小图；雪碧图；
           $(".userinfo img").show().css("display", "inline-block").attr("src", res.data.user_pic);
-
+          $(".avatar").hide();
         }
         //      名字第一个字！
         else {
@@ -77,6 +77,7 @@ function getInfo() {
 
           // 3.设置
           $(".avatar").show().css("display", "inline-block").text(str);
+          $(".userinfo img").show()
           //      show方法：给DOM添加行内样式 display: inline;
           //      需要：单独设置css样式
         }
